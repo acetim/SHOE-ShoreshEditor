@@ -1,5 +1,6 @@
-mod GapBuffer;
+mod gap_buffer;
+
 
 fn main() {
-    let x =1;
+
 }
