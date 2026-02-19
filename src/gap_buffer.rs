@@ -3,11 +3,9 @@ use std::fs::File;
 use std::io::ErrorKind;
 
 pub struct GapBuffer{
-
     data:Vec<char>,
     gap_start:usize,
     gap_len:usize,
-
 }
 
 
