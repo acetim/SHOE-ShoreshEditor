@@ -33,7 +33,9 @@ impl TextEditor{
                     }
                     _=>{
                         //ACTUAL TEXT EDITOR LOOP STARTS HERE
-                        self.viewer.read_to_viewer(&key_event)?;
+                        
+                        //read to buffer
+                        //render
 
                         //TEXT EDITOR LOOP ENDS HERE
                     }

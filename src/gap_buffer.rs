@@ -78,5 +78,34 @@ impl GapBuffer{
         self.gap_len -= 1;
     }
 
+    pub fn calculate_cursor_pos(&self)->(u16,u16){
+        let mut x = 0;
+        let mut y = 0;
+
+
+        for i in 0..self.gap_start {
+            if self.data[i] == '\n' {
+                y += 1;
+                x = 0;
+            } else {
+                x += 1;
+            }
+        }
+        (x as u16, y as u16)
+    }
+    pub fn to_string(&self) -> String{
+        let pre_gap = self.data[..self.gap_start].iter();
+        let post_gap = self.data[self.gap_start + self.gap_len..].iter();
+
+
+        pre_gap.chain(post_gap).collect()
+    }
+    pub fn to_slices(&self) -> (String,String){
+        let pre_gap = self.data[..self.gap_start].iter();
+        let post_gap = self.data[self.gap_start + self.gap_len..].iter();
+
+
+        (pre_gap.collect(),post_gap.collect())
+    }
 
 }
