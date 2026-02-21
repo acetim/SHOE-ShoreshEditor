@@ -1,8 +1,9 @@
 
 mod gap_buffer;
 mod viewer;
-use crate::gap_buffer::GapBuffer;
-use crate::viewer::Viewer;
+mod text_editor;
+use crate::text_editor::TextEditor;
 fn main()  {
-    Viewer::view()
+    let mut text_editor= TextEditor::new();
+    text_editor.start_text_editor();
 }
