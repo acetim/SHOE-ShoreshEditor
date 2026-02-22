@@ -32,9 +32,7 @@ impl Viewer{
         self.stdout.execute(terminal::Clear(terminal::ClearType::All))?;
         self.stdout.execute(cursor::MoveTo(0, 0))?;
         let width = self.terminal_size.0;
-        let height= self.terminal_size.1;
 
-        let mut last_line=0;
         let text = buffer.to_string();
 
         //render text
@@ -47,13 +45,7 @@ impl Viewer{
 
             self.stdout.execute(cursor::MoveTo(start_x, y as u16))?;
             print!("{}", line);
-            last_line=y;
-        }
-        //print ~ until the end
-        for line in last_line as u16..height{
-            self.stdout.execute(cursor::MoveTo(width,line))?;
-            print!("~");
-            print!("\n");
+
         }
         //move the cursor to insertion point
         let (x_cursor,y_cursor)=buffer.calculate_cursor_pos();

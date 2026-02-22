@@ -8,16 +8,12 @@ pub struct GapBuffer{
     gap_len:usize,
 }
 
-
+pub enum LeftRight{
+    Left,
+    Right,
+}
 
 impl GapBuffer{
-    pub fn new(capacity:usize) -> Self {
-        Self {
-            data:vec![' ';capacity],
-            gap_start:0,
-            gap_len:capacity
-        }
-    }
     pub fn from_file(path:&str,capacity:usize)->Self{
         let data = match fs::read_to_string(path){
             Ok(string)=>string,
@@ -34,14 +30,19 @@ impl GapBuffer{
             }
         };
         let mut data_vec:Vec<char>=data.chars().collect();
-        data_vec.extend(std::iter::repeat(' ').take(capacity));//make gap
+
+        let current_char_count = data_vec.len();
+
+        data_vec.resize(current_char_count + capacity, ' ');//make gap
         Self{
             data:data_vec,
-            gap_start:data.len(),
+            gap_start:current_char_count,
             gap_len:capacity
         }
+
 }
-    pub fn move_gap(&mut self, new_pos: usize) {
+
+    fn move_gap(&mut self, new_pos: usize) {
         while self.gap_start > new_pos {//if new_pos is to the left of curPos
             self.gap_start -= 1;
             self.data[self.gap_start + self.gap_len] = self.data[self.gap_start];
@@ -51,6 +52,18 @@ impl GapBuffer{
             self.gap_start += 1;
         }
     }
+
+    pub fn move_left_or_right(&mut self,m:LeftRight){
+        match m {
+            LeftRight::Right=>{
+                self.move_gap(self.gap_start-1)
+            }
+            LeftRight::Left=>{
+                self.move_gap(self.gap_start+1)
+            }
+        }
+    }
+
     fn grow(&mut self){
         let old_capacity = self.data.len();
         let new_capacity= old_capacity*2;
@@ -68,6 +81,7 @@ impl GapBuffer{
         self.data = new_data;
         self.gap_len = new_gap_len;
     }
+
     pub fn insert(&mut self, c: char) {
         if self.gap_len == 0 {
             self.grow();
@@ -76,6 +90,13 @@ impl GapBuffer{
         self.data[self.gap_start] = c;
         self.gap_start += 1;
         self.gap_len -= 1;
+    }
+
+    pub fn delete(&mut self){
+        if(self.gap_start>0){
+            self.gap_start-=1;
+        }
+        self.data[self.gap_start]=' ';
     }
 
     pub fn calculate_cursor_pos(&self)->(u16,u16){
@@ -93,6 +114,7 @@ impl GapBuffer{
         }
         (x as u16, y as u16)
     }
+
     pub fn to_string(&self) -> String{
         let pre_gap = self.data[..self.gap_start].iter();
         let post_gap = self.data[self.gap_start + self.gap_len..].iter();
@@ -100,6 +122,7 @@ impl GapBuffer{
 
         pre_gap.chain(post_gap).collect()
     }
+
     pub fn to_slices(&self) -> (String,String){
         let pre_gap = self.data[..self.gap_start].iter();
         let post_gap = self.data[self.gap_start + self.gap_len..].iter();
