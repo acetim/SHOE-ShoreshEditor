@@ -18,7 +18,6 @@ impl Viewer{
     }
     pub fn init(&mut self){
         enable_raw_mode().unwrap();
-        self.clear_screen().unwrap();
         self.stdout.execute(cursor::Show).unwrap();
         self.stdout.execute(SetCursorStyle::BlinkingBlock).unwrap();
     }
@@ -29,8 +28,10 @@ impl Viewer{
 
     }
     pub fn render(&mut self,buffer:&GapBuffer)->io::Result<()>{
-        self.stdout.execute(terminal::Clear(terminal::ClearType::All))?;
         self.stdout.execute(cursor::MoveTo(0, 0))?;
+        self.stdout.execute(terminal::Clear(terminal::ClearType::FromCursorDown))?;
+        self.stdout.execute(cursor::MoveTo(0, 0))?;
+
         let width = self.terminal_size.0;
 
         let text = buffer.to_string();
@@ -45,24 +46,17 @@ impl Viewer{
 
             self.stdout.execute(cursor::MoveTo(start_x, y as u16))?;
             print!("{}", line);
+            self.stdout.execute(cursor::MoveTo(0, y as u16))?;
+
 
         }
         //move the cursor to insertion point
         let (x_cursor,y_cursor)=buffer.calculate_cursor_pos();
         let visual_x = width.saturating_sub(1).saturating_sub(x_cursor);
+
         self.stdout.execute(cursor::MoveTo(visual_x, y_cursor))?;
         self.stdout.flush()?;
 
-        Ok(())
-    }
-    fn clear_screen(&self)->io::Result<()>{
-        let cols = self.terminal_size.0;
-         for _rows in 0..self.terminal_size.1{
-             stdout().execute(cursor::MoveToColumn(cols))?;
-             print!("~");
-             print!("\n")
-         }
-        stdout().execute(cursor::MoveToRow(0))?;
         Ok(())
     }
     fn clear_screen_for_viewer_closure(&self)-> io::Result<()>{
@@ -72,5 +66,7 @@ impl Viewer{
         }
         Ok(())
     }
+
+
 
 }

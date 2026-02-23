@@ -14,6 +14,7 @@ pub enum LeftRight{
 }
 
 impl GapBuffer{
+
     pub fn from_file(path:&str,capacity:usize)->Self{
         let data = match fs::read_to_string(path){
             Ok(string)=>string,
@@ -43,23 +44,27 @@ impl GapBuffer{
 }
 
     fn move_gap(&mut self, new_pos: usize) {
-        while self.gap_start > new_pos {//if new_pos is to the left of curPos
-            self.gap_start -= 1;
-            self.data[self.gap_start + self.gap_len] = self.data[self.gap_start];
-        }
-        while self.gap_start < new_pos {//if new_pos is to the right of curPos
-            self.data[self.gap_start] = self.data[self.gap_start + self.gap_len];
-            self.gap_start += 1;
-        }
+       if(new_pos <(self.data.len()-self.gap_len)+1) {
+           while self.gap_start > new_pos { //if new_pos is to the left of curPos
+               self.gap_start -= 1;
+               self.data[self.gap_start + self.gap_len] = self.data[self.gap_start];
+           }
+           while self.gap_start < new_pos { //if new_pos is to the right of curPos
+               self.data[self.gap_start] = self.data[self.gap_start + self.gap_len];
+               self.gap_start += 1;
+           }
+       }
     }
 
     pub fn move_left_or_right(&mut self,m:LeftRight){
         match m {
             LeftRight::Right=>{
-                self.move_gap(self.gap_start-1)
+                if(self.gap_start>0) {//prevent underflow
+                    self.move_gap(self.gap_start - 1)
+                }
             }
             LeftRight::Left=>{
-                self.move_gap(self.gap_start+1)
+                self.move_gap(self.gap_start + 1)
             }
         }
     }
@@ -95,8 +100,10 @@ impl GapBuffer{
     pub fn delete(&mut self){
         if(self.gap_start>0){
             self.gap_start-=1;
+            self.gap_len+=1;
+
         }
-        self.data[self.gap_start]=' ';
+
     }
 
     pub fn calculate_cursor_pos(&self)->(u16,u16){
@@ -131,4 +138,7 @@ impl GapBuffer{
         (pre_gap.collect(),post_gap.collect())
     }
 
+    pub fn data(&self) -> &Vec<char> {
+        &self.data
+    }
 }
