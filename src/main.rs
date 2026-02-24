@@ -17,5 +17,5 @@ fn main()  {
     let file_path = args[1].as_str();
 
     let mut text_editor= TextEditor::new(file_path);
-    text_editor.start_text_editor();
+    text_editor.start_text_editor().expect("error encountered while trying to open file");
 }
