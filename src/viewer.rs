@@ -49,7 +49,7 @@ impl Viewer{
             self.stdout.execute(cursor::MoveTo(start_x, (y+(y_cursor as usize)) as u16))?;
 
             let vec_str:Vec<char> = line.chars().collect();
-            execute!(self.stdout,Print(format!("{}",self.colorizer.colorize(&vec_str))))?;
+            execute!(self.stdout,Print(format!("{}",self.colorizer.colorize(&vec_str))))?;//print line
             self.colorizer.reset();
         }
 

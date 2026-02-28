@@ -6,21 +6,21 @@ use crossterm::style::Colors;
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref KEYWORDS: HashMap<&'static str, Color> = {
-        let mut keywords:HashMap<&str,Color>= HashMap::new();
-           keywords.insert("שלם", Color::Magenta);
-           keywords.insert("ויהי_חושך", Color::Green);
-           keywords.insert("אם_יהיה", Color::Cyan);
-           keywords.insert("בעוד", Color::Cyan);
-           keywords.insert("ויאמר", Color::Green);
-           keywords.insert("ויאמר_שלם", Color::Green);
-           keywords.insert("ויעש", Color::Yellow);
-           keywords.insert("ויתם",Color::Yellow);
-           keywords.insert("ויברא", Color::Green);
-           keywords.insert("תהו_ובהו", Color::Magenta);
-           keywords.insert("ויקרא",Color::Orange);
-           keywords.insert("אמן",Color::Green);
-           keywords.insert("בסד",Color::Blue);
+    static ref KEYWORDS: HashMap<String, Color> = {
+        let mut keywords:HashMap<String,Color>= HashMap::new();
+           keywords.insert("שלם".chars().rev().collect::<String>(), Color::Magenta);
+           keywords.insert("ויהי_חושך".chars().rev().collect::<String>(), Color::Green);
+           keywords.insert("אם_יהיה".chars().rev().collect::<String>(), Color::Cyan);
+           keywords.insert("בעוד".chars().rev().collect::<String>(), Color::Cyan);
+           keywords.insert("ויאמר".chars().rev().collect::<String>(), Color::Green);
+           keywords.insert("ויאמר_שלם".chars().rev().collect::<String>(), Color::Green);
+           keywords.insert("ויעש".chars().rev().collect::<String>(), Color::Yellow);
+           keywords.insert("ויתם".chars().rev().collect::<String>(),Color::Yellow);
+           keywords.insert("ויברא".chars().rev().collect::<String>(), Color::Green);
+           keywords.insert("תהו_ובהו".chars().rev().collect::<String>(), Color::Magenta);
+           keywords.insert("ויקרא".chars().rev().collect::<String>(),Color::Orange);
+           keywords.insert("אמן".chars().rev().collect::<String>(),Color::Green);
+           keywords.insert("בסד".chars().rev().collect::<String>(),Color::Blue);
            keywords
     };
 }
