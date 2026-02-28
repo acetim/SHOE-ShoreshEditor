@@ -1,8 +1,9 @@
 use std::fs::File;
 use std::io;
 use std::io::{stdout, Write};
-use crossterm::{cursor, event, ExecutableCommand};
+use crossterm::{cursor, event, terminal, ExecutableCommand};
 use crossterm::event::{Event, KeyCode};
+use crossterm::terminal::ClearType;
 use crate::editor::Editor;
 use crate::viewer::Viewer;
 
@@ -41,6 +42,8 @@ impl TextEditor{
             }
         }
         self.viewer.close_viewer();
+        stdout().execute(cursor::MoveTo(0, 0))?;
+        stdout().execute(terminal::Clear(ClearType::CurrentLine))?;
         Ok(())
 
     }
@@ -51,7 +54,7 @@ impl TextEditor{
                     KeyCode::Esc=>{
                         break
                     }
-                    KeyCode::Left|KeyCode::Right|KeyCode::Backspace|KeyCode::Enter=>{
+                    KeyCode::Left|KeyCode::Right|KeyCode::Backspace|KeyCode::Enter|KeyCode::Tab=>{
                         self.editor.handle_key(key_event.code);
                         self.viewer.render(self.editor.buffer())?;
                     }

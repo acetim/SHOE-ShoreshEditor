@@ -1,8 +1,6 @@
 use hebrew_unicode_script::is_hbr_consonant;
 use std::collections::HashMap;
-use std::sync::LazyLock;
 use colored::Colorize;
-use crossterm::style::Colors;
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -30,12 +28,10 @@ pub struct ColorTokenizer{
 
 }
 pub enum Color{
-    Red,
     Green,
     Blue,
     Magenta,
     Cyan,
-    White,
     Yellow,
     Orange
 }
@@ -48,7 +44,6 @@ impl ColorTokenizer{
     }
     pub fn colorize(&mut self,line:&Vec<char>)->String{
         let mut new = String::new();
-        let current=0;
         while self.current<line.len() {
             if is_hbr_consonant(line[self.current]){
                 new.push_str(self.get_color(&line).as_str())
@@ -68,7 +63,7 @@ impl ColorTokenizer{
             buf.push(line[self.current]);
             self.current += 1;
         }
-        if(KEYWORDS.contains_key(buf.as_str())){
+        if KEYWORDS.contains_key(buf.as_str()) {
             return Self::str_to_colored(buf.as_str(),KEYWORDS.get(buf.as_str()).unwrap());
         }
         buf
@@ -76,13 +71,12 @@ impl ColorTokenizer{
 
     fn str_to_colored(buf:&str,color:&Color)->String{
         match color{
-            Color::Yellow => {buf.yellow().to_string()},
-            Color::Red => {buf.red().to_string()},
-            Color::Green => {buf.green().to_string()},
-            Color::Blue=>{buf.blue().to_string()},
-            Color::Magenta=>{buf.magenta().to_string()},
+            Color::Yellow => {Colorize::yellow(buf).to_string()},
+            Color::Green => {Colorize::green(buf).to_string()},
+            Color::Blue=>{Colorize::blue(buf).to_string()},
+            Color::Magenta=>{Colorize::magenta(buf).to_string()},
             Color::Orange=>{buf.truecolor(255, 165, 0).to_string()},
-            _=>{return buf.to_string();}
+            Color::Cyan=>{Colorize::cyan(buf).to_string()}
         }
     }
 

@@ -44,7 +44,7 @@ impl GapBuffer{
 }
 
     fn move_gap(&mut self, new_pos: usize) {
-       if(new_pos <(self.data.len()-self.gap_len)+1) {
+       if new_pos <(self.data.len()-self.gap_len)+1  {
            while self.gap_start > new_pos { //if new_pos is to the left of curPos
                self.gap_start -= 1;
                self.data[self.gap_start + self.gap_len] = self.data[self.gap_start];
@@ -59,7 +59,7 @@ impl GapBuffer{
     pub fn move_left_or_right(&mut self,m:LeftRight){
         match m {
             LeftRight::Right=>{
-                if(self.gap_start>0) {//prevent underflow
+                if self.gap_start>0  {//prevent underflow
                     self.move_gap(self.gap_start - 1)
                 }
             }
@@ -98,7 +98,7 @@ impl GapBuffer{
     }
 
     pub fn delete(&mut self){
-        if(self.gap_start>0){
+        if self.gap_start>0 {
             self.gap_start-=1;
             self.gap_len+=1;
 
@@ -129,16 +129,7 @@ impl GapBuffer{
 
         pre_gap.chain(post_gap).collect()
     }
-
-    pub fn to_slices(&self) -> (String,String){
-        let pre_gap = self.data[..self.gap_start].iter();
-        let post_gap = self.data[self.gap_start + self.gap_len..].iter();
+    
 
 
-        (pre_gap.collect(),post_gap.collect())
-    }
-
-    pub fn data(&self) -> &Vec<char> {
-        &self.data
-    }
 }

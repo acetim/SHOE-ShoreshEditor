@@ -3,6 +3,7 @@ use crate::gap_buffer::{GapBuffer, LeftRight};
 
 pub struct Editor{
     buffer:GapBuffer,
+    
 }
 impl Editor{
     pub fn new(path:&str)->Self{
@@ -24,6 +25,11 @@ impl Editor{
             }
             KeyCode::Char(char)=>{
                 self.buffer.insert(char);
+            }
+            KeyCode::Tab=>{
+                for _i in 0..4{
+                    self.buffer.insert(' ');
+                }
             }
             _=>{
                 
