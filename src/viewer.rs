@@ -3,18 +3,20 @@ use crossterm::terminal::{enable_raw_mode, ClearType};
 use crossterm::terminal::disable_raw_mode;
 use std::io::{self, Write, stdout, Stdout};
 
-use crossterm::{cursor, terminal};
+use crossterm::{cursor, terminal,execute,style::{Stylize, Print},};
 use crossterm::cursor::SetCursorStyle;
 use crossterm::ExecutableCommand;
+use crate::color_tokenizer::ColorTokenizer;
 use crate::gap_buffer::GapBuffer;
 
 pub struct Viewer{
     terminal_size:(u16,u16),
-    stdout: Stdout
+    stdout: Stdout,
+    colorizer:ColorTokenizer
 }
 impl Viewer{
     pub fn new() -> Self {
-        Self {terminal_size:crossterm::terminal::size().unwrap_or((20,20)), stdout:stdout()}
+        Self {terminal_size:crossterm::terminal::size().unwrap_or((20,20)), stdout:stdout(),colorizer:ColorTokenizer::new()}
     }
     pub fn init(&mut self){
         enable_raw_mode().unwrap();
@@ -45,7 +47,10 @@ impl Viewer{
             let start_x = width.saturating_sub(line_width);
 
             self.stdout.execute(cursor::MoveTo(start_x, (y+(y_cursor as usize)) as u16))?;
-            print!("{}", line);
+
+            let vec_str:Vec<char> = line.chars().collect();
+            execute!(self.stdout,Print(format!("{}",self.colorizer.colorize(&vec_str))))?;
+            self.colorizer.reset();
         }
 
         //move the cursor to insertion point

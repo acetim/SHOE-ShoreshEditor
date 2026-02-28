@@ -25,7 +25,7 @@ lazy_static! {
     };
 }
 
-pub struct color_tokenizer{
+pub struct ColorTokenizer{
     current:usize
 
 }
@@ -39,8 +39,8 @@ pub enum Color{
     Yellow,
     Orange
 }
-impl color_tokenizer{
-    pub fn new() -> color_tokenizer{
+impl ColorTokenizer{
+    pub fn new() -> ColorTokenizer{
         Self{current:0}
     }
     pub fn reset(&mut self){
