@@ -23,7 +23,7 @@ impl TextEditor{
     pub fn start_text_editor(&mut self)->io::Result<()>{
         loop {
             self.viewer.init();
-            self.viewer.render(self.editor.buffer())?;
+            self.viewer.init_render(self.editor.buffer())?;
             match self.text_editor_loop() {
                 Ok(()) => {}
                 Err(error) => {
@@ -32,7 +32,7 @@ impl TextEditor{
             }
             match Self::try_exit(){
                 ExitStatus::Save=>{
-                    let mut file = File::create(&self.path)?;
+                    let mut file = File::create(&self.path).expect("cannot write to file");
                     file.write_all(self.editor.buffer().to_string().as_bytes())?;
                 }
                 ExitStatus::Exit=>{

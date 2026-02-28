@@ -1,5 +1,5 @@
 
-use crossterm::terminal::enable_raw_mode;
+use crossterm::terminal::{enable_raw_mode, ClearType};
 use crossterm::terminal::disable_raw_mode;
 use std::io::{self, Write, stdout, Stdout};
 
@@ -28,15 +28,44 @@ impl Viewer{
 
     }
     pub fn render(&mut self,buffer:&GapBuffer)->io::Result<()>{
+
+        let width = self.terminal_size.0;
+
+        let text = buffer.to_string();
+        let (x_cursor,y_cursor)=buffer.calculate_cursor_pos();
+        //clear current line
+        self.stdout.execute(cursor::MoveToRow(y_cursor))?;
+        self.stdout.execute(terminal::Clear(ClearType::CurrentLine))?;
+        //render text
+        for (y, line) in text.lines().skip(y_cursor as usize).enumerate() {
+
+            let line: String = line.chars().rev().collect();
+
+            let line_width = line.chars().count() as u16;
+            let start_x = width.saturating_sub(line_width);
+
+            self.stdout.execute(cursor::MoveTo(start_x, (y+(y_cursor as usize)) as u16))?;
+            print!("{}", line);
+        }
+
+        //move the cursor to insertion point
+        let visual_x = width.saturating_sub(1).saturating_sub(x_cursor);
+        self.stdout.execute(cursor::MoveTo(visual_x, y_cursor))?;
+        self.stdout.flush()?;
+
+        Ok(())
+    }
+    pub fn init_render(&mut self,buffer:&GapBuffer)->io::Result<()>{
         self.stdout.execute(cursor::MoveTo(0, 0))?;
         self.stdout.execute(terminal::Clear(terminal::ClearType::FromCursorDown))?;
-        self.stdout.execute(cursor::MoveTo(0, 0))?;
+
 
         let width = self.terminal_size.0;
 
         let text = buffer.to_string();
 
         //render text
+
         for (y, line) in text.lines().enumerate() {
 
             let line: String = line.chars().rev().collect();
@@ -46,14 +75,18 @@ impl Viewer{
 
             self.stdout.execute(cursor::MoveTo(start_x, y as u16))?;
             print!("{}", line);
-            self.stdout.execute(cursor::MoveTo(0, y as u16))?;
-
 
         }
         //move the cursor to insertion point
         let (x_cursor,y_cursor)=buffer.calculate_cursor_pos();
         let visual_x = width.saturating_sub(1).saturating_sub(x_cursor);
 
+
+        for i in y_cursor+1..self.terminal_size.1{
+            self.stdout.execute(cursor::MoveTo(self.terminal_size.0-1, i))?;
+            print!("~");
+
+        }
         self.stdout.execute(cursor::MoveTo(visual_x, y_cursor))?;
         self.stdout.flush()?;
 

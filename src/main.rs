@@ -11,7 +11,7 @@ fn main()  {
 
     let args: Vec<String> = env::args().collect();
     if(args.len()<2){
-        println!("אנא צרף את שם הקובץ אותו תרצה לפתוח או ליצור");
+        println!("{}", "אנא צרף את שם הקובץ אותו תרצה לפתוח או ליצור".chars().rev().collect::<String>());
         exit(1);
     }
     let file_path = args[1].as_str();

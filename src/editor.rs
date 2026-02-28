@@ -6,7 +6,7 @@ pub struct Editor{
 }
 impl Editor{
     pub fn new(path:&str)->Self{
-        Self{buffer:GapBuffer::from_file(path,10)}
+        Self{buffer:GapBuffer::from_file(path,1024)}
     }
     pub fn handle_key(&mut self,key:KeyCode){
         match key {
