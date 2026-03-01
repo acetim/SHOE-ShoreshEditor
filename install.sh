@@ -1,7 +1,4 @@
-if [[ $EUID -ne 0 ]]; then
-   echo "אנא הרץ בהרשאות משתמש-על"
-   exit 1
-fi
+
 
 if ! command -v cargo &> /dev/null; then
   echo "מוריד cargo";
