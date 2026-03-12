@@ -19,7 +19,10 @@ lazy_static! {
            keywords.insert("ויקרא".chars().rev().collect::<String>(),Color::Orange);
            keywords.insert("אמן".chars().rev().collect::<String>(),Color::Green);
            keywords.insert("בסד".chars().rev().collect::<String>(),Color::Blue);
-           keywords
+           keywords.insert("שמע".chars().rev().collect::<String>(),Color::Green);
+           keywords.insert("או".chars().rev().collect::<String>(),Color::Orange);
+           keywords.insert("וגם".chars().rev().collect::<String>(),Color::Orange);
+        keywords
     };
 }
 
